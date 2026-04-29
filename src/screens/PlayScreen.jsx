@@ -5,7 +5,6 @@ export default function PlayScreen() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // ✅ Data comes directly from SearchScreen via navigate state — no API call needed
   const song = location.state;
 
   const audioRef = useRef(null);
@@ -13,7 +12,6 @@ export default function PlayScreen() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
-  // 🔥 AUTO PLAY WHEN COMPONENT MOUNTS
   useEffect(() => {
     if (song?.preview && audioRef.current) {
       const timer = setTimeout(() => {
@@ -30,7 +28,6 @@ export default function PlayScreen() {
     }
   }, [song]);
 
-  // 🎮 CONTROLS
   const togglePlay = () => {
     if (!audioRef.current) return;
     if (audioRef.current.paused) {
@@ -59,7 +56,6 @@ export default function PlayScreen() {
     }
   };
 
-  // ⏱ FORMAT TIME
   const formatTime = (time) => {
     if (!time || isNaN(time)) return '0:00';
     const min = Math.floor(time / 60);
@@ -67,19 +63,17 @@ export default function PlayScreen() {
     return `${min}:${sec < 10 ? '0' : ''}${sec}`;
   };
 
-  // ❌ No song data (user opened URL directly without coming from search)
   if (!song) return (
-    <div className="min-h-screen bg-[#080808] flex flex-col items-center justify-center gap-5 text-white">
-      <p className="text-3xl">No song selected 😢</p>
-      <Link to="/" className="px-6 py-3 bg-red-600 rounded">← HOME</Link>
+    <div className="min-h-screen bg-[#080808] flex flex-col items-center justify-center gap-5 text-white px-4 text-center">
+      <p className="text-2xl sm:text-3xl">No song selected 😢</p>
+      <Link to="/" className="px-6 py-3 bg-red-600 rounded text-sm sm:text-base">← HOME</Link>
     </div>
   );
 
-  // ❌ Song exists but has no preview URL
   if (!song.preview) return (
-    <div className="min-h-screen bg-[#080808] flex flex-col items-center justify-center gap-5 text-white">
-      <p className="text-3xl">No preview available 😢</p>
-      <button onClick={() => navigate(-1)} className="px-6 py-3 bg-red-600 rounded">← Back</button>
+    <div className="min-h-screen bg-[#080808] flex flex-col items-center justify-center gap-5 text-white px-4 text-center">
+      <p className="text-2xl sm:text-3xl">No preview available 😢</p>
+      <button onClick={() => navigate(-1)} className="px-6 py-3 bg-red-600 rounded text-sm sm:text-base">← Back</button>
     </div>
   );
 
@@ -87,33 +81,38 @@ export default function PlayScreen() {
     <div className="min-h-screen bg-[#080808] text-white flex flex-col">
 
       {/* NAV */}
-      <nav className="flex justify-between px-10 py-5 border-b border-white/10">
-        <Link to="/" className="text-2xl tracking-widest">
+      <nav className="flex justify-between items-center px-5 sm:px-10 py-4 sm:py-5 border-b border-white/10">
+        <Link to="/" className="text-xl sm:text-2xl tracking-widest">
           TUNE<span className="text-red-600">X</span>
         </Link>
-        <button onClick={() => navigate(-1)}>← Back</button>
+        <button
+          onClick={() => navigate(-1)}
+          className="text-sm sm:text-base text-white/70 hover:text-white transition-colors"
+        >
+          ← Back
+        </button>
       </nav>
 
-      <div className="flex-1 grid md:grid-cols-2">
+      {/* MAIN CONTENT */}
+      <div className="flex-1 flex flex-col md:grid md:grid-cols-2">
 
-        {/* LEFT — Album Art */}
-        <div className="flex items-center justify-center p-10">
+        {/* Album Art */}
+        <div className="flex items-center justify-center p-6 sm:p-10 pt-8">
           <img
             src={song.image}
             alt={song.title}
-            className="w-72 h-72 rounded-lg shadow-lg"
+            className="w-48 h-48 sm:w-60 sm:h-60 md:w-72 md:h-72 rounded-lg shadow-2xl object-cover"
           />
         </div>
 
-        {/* RIGHT — Player */}
-        <div className="flex flex-col justify-center gap-6 px-10">
+        {/* Player */}
+        <div className="flex flex-col justify-center gap-5 sm:gap-6 px-5 sm:px-10 pb-10 md:pb-0">
 
-          <div>
-            <h1 className="text-4xl">{song.title}</h1>
-            <p className="text-white/50">{song.artist}</p>
+          <div className="text-center md:text-left">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight">{song.title}</h1>
+            <p className="text-white/50 mt-1 text-sm sm:text-base">{song.artist}</p>
           </div>
 
-          {/* AUDIO */}
           <audio
             ref={audioRef}
             src={song.preview}
@@ -131,27 +130,39 @@ export default function PlayScreen() {
             value={currentTime}
             step="0.1"
             onChange={seek}
-            className="w-full accent-red-600"
+            className="w-full accent-red-600 cursor-pointer h-1"
           />
 
           {/* TIME */}
-          <div className="flex justify-between text-sm text-white/50">
+          <div className="flex justify-between text-xs sm:text-sm text-white/50 -mt-3">
             <span>{formatTime(currentTime)}</span>
             <span>{formatTime(duration)}</span>
           </div>
 
           {/* CONTROLS */}
-          <div className="flex items-center justify-center gap-6">
-            <button onClick={backward} className="text-2xl">⏪</button>
+          <div className="flex items-center justify-center md:justify-start gap-4 sm:gap-6 mt-2">
+            <button
+              onClick={backward}
+              className="text-xl sm:text-2xl hover:scale-110 transition-transform active:scale-95"
+              aria-label="Rewind 10s"
+            >
+              ⏪
+            </button>
 
             <button
               onClick={togglePlay}
-              className="bg-red-600 px-6 py-3 rounded text-lg"
+              className="bg-red-600 hover:bg-red-500 active:scale-95 transition-all px-6 sm:px-8 py-3 rounded-full text-base sm:text-lg font-medium min-w-[110px]"
             >
               {isPlaying ? '⏸ Pause' : '▶ Play'}
             </button>
 
-            <button onClick={forward} className="text-2xl">⏩</button>
+            <button
+              onClick={forward}
+              className="text-xl sm:text-2xl hover:scale-110 transition-transform active:scale-95"
+              aria-label="Forward 10s"
+            >
+              ⏩
+            </button>
           </div>
 
         </div>
