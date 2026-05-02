@@ -140,13 +140,7 @@ Contributions are welcome!
 4. Push to your branch
 5. Open a Pull Request
 
----
 
-## 📄 License
-
-This project is licensed under the MIT License.
-
----
 
 ## 👨‍💻 Author
 
@@ -159,3 +153,5 @@ Developed by **Harsh Agnihotri**
 If you like this project, give it a ⭐ on GitHub!
 
 ---
+
+
